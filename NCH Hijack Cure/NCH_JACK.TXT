@@ -1,0 +1,117 @@
+NCH Hijack Cure (NCH_JACK.TXT)
+------------------------------
+u0r0 by Brendon, 09/16/2017
+
+
+Synopsis
+--------
+NCH Software is known for their VideoPad video editor, which used to be one of
+the best free video editing software. Today (at the time of writing), I
+recognize it as one of the few intermediate, non-linear video editors for
+Windows.
+
+However, there are a number of major issues, all of which would have been let
+downs for others. This writing covers one of them which applies to pretty much
+every NCH Software product:
+
+    Upon program installation, file associations are hijacked to advertise their
+    range of products. A fine marketing strategy indeed (sarcasm). For example,
+    opening a ZIP file will bring up a message to install ExpressZIP, another
+    NCH Software product. This also applies to paid software, wow really?
+
+In this writing I will cover a number of methods to get away from the above
+issue--and here they are...
+
+
+Method I - See It? Fix It.
+--------------------------
+This is what I used to do, and is recommended for most people.
+
+If you see a file type that has been hijacked, all you have to do is to
+reassociate this file type into a program of your desire. To do this:
+
+1.  View file properties (File -> Properties)
+2.  On the window that appears, tap [Change...]
+3.  Select your program of desire
+4.  Tap [OK] to save changes
+
+This method may seem distracting at first, but it will diminish overtime.
+
+
+Method II - Brutal
+------------------
+As you may have guessed, this method involves tinkering around the Windows
+registry, a very crucial component of the operating system. It is possible for a
+breakage to leave the system to haywire. If you wish to proceed, I suggest you
+to create a system restore point in case bad things happen to you.
+
+Anyways, The hijack is simply an invasion to the registry. Luckily, most of them
+identify themselves with the NCH keywords so let us use that as a base search
+term. Without further ado, here goes:
+
+1.  Start Windows Registry Editor (regedit)
+2.  Point to the root of the hiearchy (Computer)
+3.  Open the Find dialog box ([ctrl+f] or Edit -> Find)
+4.  Look at: [X]Keys [X]Values [X]Data
+5.  Enter the search term: NCH
+6.  Tap [Find Next]
+
+From here you have to be careful, common sense applies:
+
+7A. If a data is found, usually under the (Default) values, empty its contents
+    (NOT DELETING THE VALUE NOR KEY)
+
+7B. If a value is found, usually under the OpenWithProgId keys, delete it
+
+7C. If a key is found, stop iterating; you are finished with step 7, and read on
+
+7D. Iterate over the entire HKEY_CLASSES_ROOT, [f3] to find for the next match
+
+Point back to the root of the registry. You will now perform a series of
+searches. Here are the terms I gathered so far:
+
+-   NCHconvertdoc
+-   NCHconvertimage
+-   NCHconvertvideo
+-   NCHextract
+-   NCHslideshow
+
+These are keys to be deleted when found. VideoPad users might want to get rid of
+relevant keys to when searching for NCHconvertvideo such as "Add to VideoPad
+project" and "Stabilize video". Also remember to stop if you reach outside
+HKEY_CLASSES_ROOT. That is it.
+
+
+Method III - Avoid
+------------------
+If you wish not to face this (ever again), it is best to avoid NCH Software for
+now (or forever as this has been around for long years). Go look for
+alternatives, though I can not say much in the video editing department.
+
+
+Conclusion
+----------
+NCH Software needs to change the way they market their products. The practice
+they are doing is similar to that of malwares and alike, causing some security
+software to flag them as threats. I have not heard of any other software company
+being this brutal.
+
+If they really want their customers to use all NCH Software products, they are
+better off making program suites or better yet, wrap them into an operating
+system.
+
+And finally, if you worry that this cure will break your system, don't. I did
+method II at this very computer on which I am writing this document, no problems
+encountered.
+
+
+License
+-------
+This work is licensed under the Creative Commons Attribution-ShareAlike 4.0
+International License. To view a copy of this license, visit
+http://creativecommons.org/licenses/by-nc-sa/4.0/ or send a letter to Creative
+Commons, PO Box 1866, Mountain View, CA 94042, USA.
+
+
+-------------------
+End of NCH_JACK.TXT
