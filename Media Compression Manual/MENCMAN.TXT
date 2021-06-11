@@ -1,629 +1,628 @@
-Media Compression Manual u0r7 by Brendon, 05/21/2021.
+Media Compression Manual u1r0 by Brendon, 06/10/2021.
 
-MONOSPACED 80-COLUMN CANVAS REQUIRED FOR DOCUMENT TO APPEAR CORRECTLY.
-
-0               "#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOP                8
-0               QRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~!                0
-
-PRINTABLE CHARACTERS ONLY. PATTERN MUST ALIGN AT TWO LINES.
+0   0   0   1   "#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQ   6   7   7   8
+1   5   9   3   RSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~!—    8   2   6   0
 
 
 ——Preface
-Despite the advancements in digital storage solutions, data compression is still
-employed today to save bandwidth and storage spaces.
+Despite the advancements in data storage solutions, data is still compressed
+today to save bandwidth and storage spaces.
 
-Uncompressed media files are huge: an hour of CD-quality audio costs about 606
-MiB, and a minute of DVD-quality video can take almost 600 MiB in a minute. A
-single-layer DVD can contain up to 4.7 GB of data, so compression allows it to
-contain hours of video.
+Uncompressed media files are huge. An hour of CD-quality audio measures about
+606 MiB large, and a minute of DVD-quality video can take well over 1 GiB.
 
-This manual documents at least some of my knowledge about media compression.
+Because of this, media and especially video compression has been commonplace
+since the 1980s. In 1993, we were blessed with Video CD which uses MPEG-1
+compression to fit over an hour of video on a single disc. Then in 1997 or so,
+DVD-Video was released to the market. It uses MPEG-2 compression to fit hours of
+video on a single disc.
 
-You don't really have to follow exactly what I recommend, but take it as a
-starting point to your liking.
+This manual documents at least some of my knowledge about media compression. You
+don't have to follow its recommendations, but take them as starting points to
+your liking.
 
 
 ——TOC: Contents
-Sections within this document are labeled for ease of navigation. You can jump
-to any section by using the find/search feature of your viewer [ctrl+f],
-entering its label in the square brackets to the right, followed by a colon (:).
+With the find/search function of your viewer, you can jump to a section by its
+label followed by a colon ':'. For example, use "TOC:" to return here.
 
-For example, to return to this section, find "TOC:".
+Contents . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [TOC]
+Data Compression . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [A00]
+  - Lossless . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [A01]
+  - Lossy  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [A02]
+— Compression Level  . . . . . . . . . . . . . . . . . . . . . . . . . . . [A10]
+— Rate Control . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [A20]
+  - Constant Bitrate . . . . . . . . . . . . . . . . . . . . . . . . . . . [A21]
+  - Variable Bitrate . . . . . . . . . . . . . . . . . . . . . . . . . . . [A22]
+Audio Compression  . . . . . . . . . . . . . . . . . . . . . . . . . . . . [B00]
+— Opus . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [B10]
+— Vorbis . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [B20]
+— Advanced Audio Coding (AAC)  . . . . . . . . . . . . . . . . . . . . . . [B30]
+— MPEG-1/2 Audio Layer III (MP3) . . . . . . . . . . . . . . . . . . . . . [B40]
+— Windows Media Audio (WMA)  . . . . . . . . . . . . . . . . . . . . . . . [B50]
+— Adaptive Transform Acoustic Coding (ATRAC) . . . . . . . . . . . . . . . [B60]
+— Audio Recording  . . . . . . . . . . . . . . . . . . . . . . . . . . . . [B70]
+Video Compression  . . . . . . . . . . . . . . . . . . . . . . . . . . . . [C00]
+— Advanced Video Coding (AVC/H.264)  . . . . . . . . . . . . . . . . . . . [C10]
+— MPEG-4 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [C20]
+— Theora . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [C30]
+— VP8  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [C40]
+— H.265, VP9, and AV1  . . . . . . . . . . . . . . . . . . . . . . . . . . [C50]
+— Chroma Subsampling . . . . . . . . . . . . . . . . . . . . . . . . . . . [C60]
+— Video Recording  . . . . . . . . . . . . . . . . . . . . . . . . . . . . [C70]
+Image Compression  . . . . . . . . . . . . . . . . . . . . . . . . . . . . [D00]
+— When To Use Lossy Compression? . . . . . . . . . . . . . . . . . . . . . [D10]
+— JPEG . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [D20]
+— Portable Network Graphics (PNG)  . . . . . . . . . . . . . . . . . . . . [D30]
+— Graphics Interchange Format (GIF)  . . . . . . . . . . . . . . . . . . . [D40]
+— WebP . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [D50]
+Media Manipulation . . . . . . . . . . . . . . . . . . . . . . . . . . . . [E00]
+— Audio Manipulation . . . . . . . . . . . . . . . . . . . . . . . . . . . [E10]
+  - Sampling Rate  . . . . . . . . . . . . . . . . . . . . . . . . . . . . [E11]
+  - Bitdepth . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [E12]
+  - Channels . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [E13]
+— Image Manipulation . . . . . . . . . . . . . . . . . . . . . . . . . . . [E20]
+  - Colors . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [E21]
+  - Resolution . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [E22]
+— Video Manipulation . . . . . . . . . . . . . . . . . . . . . . . . . . . [E30]
+Credits  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [CRD]
+License  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [LCN]
 
-Contents  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [TOC]
-= About Data Compression  . . . . . . . . . . . . . . . . . . . . . . . . [A000]
-  - Lossless  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [A001]
-  - Lossy . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [A002]
-- Common Applications . . . . . . . . . . . . . . . . . . . . . . . . . . [B000]
-= Audio Compression . . . . . . . . . . . . . . . . . . . . . . . . . . . [C000]
-  - Vorbis  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [C001]
-  - Advanced Audio Coding (AAC) . . . . . . . . . . . . . . . . . . . . . [C002]
-  - Google's AAC Recommendations  . . . . . . . . . . . . . . . . . . . . [C003]
-  - MPEG-1 Layer III (MP3)  . . . . . . . . . . . . . . . . . . . . . . . [C004]
-  - Opus  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [C005]
-- Audio Recording . . . . . . . . . . . . . . . . . . . . . . . . . . . . [D000]
-= Video Compression . . . . . . . . . . . . . . . . . . . . . . . . . . . [E000]
-  - H.264 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [E001]
-  - Google's H.264 Recommendations  . . . . . . . . . . . . . . . . . . . [E002]
-  - H.265 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [E003]
-  - Theora  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [E004]
-  - VP8 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [E005]
-  - Chroma Subsampling  . . . . . . . . . . . . . . . . . . . . . . . . . [E006]
-= Video Recording . . . . . . . . . . . . . . . . . . . . . . . . . . . . [F000]
-  - H.264 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [F001]
-  - Xvid  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [F002]
-= Image Compression . . . . . . . . . . . . . . . . . . . . . . . . . . . [G000]
-  - When To Use Lossy Compression?  . . . . . . . . . . . . . . . . . . . [G001]
-  - JPEG  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [G002]
-  - Portable Network Graphics (PNG) . . . . . . . . . . . . . . . . . . . [G003]
-  - Graphics Interchange Format (GIF) . . . . . . . . . . . . . . . . . . [G004]
-  - WebP  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [G005]
-= Ideal Content Manipulation  . . . . . . . . . . . . . . . . . . . . . . [H000]
-  - Audio Manipulation  . . . . . . . . . . . . . . . . . . . . . . . . . [H001]
-  - Image Manipulation  . . . . . . . . . . . . . . . . . . . . . . . . . [H002]
-  - Video Manipulation  . . . . . . . . . . . . . . . . . . . . . . . . . [H003]
-License . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . [LCNS]
 
+——A00: Data Compression
+Data compression involves encoding a stream of data with less bits than its
+original representation. For example, consider the following number sequence and
+its reduced representation:
 
-——A000: About Data Compression
-Data compression essentially means encoding a specific chunk of data with lesser
-bits. For example, consider the following number sequence:
+  1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1  ->  1 seventeen times.
 
-  "1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1"
-
-We can memorize this as:
-
-  "'1' seventeen times"
-
-This is a key in compressing media. How this is done is way beyond the scope of
-this manual, but here is a simple example:
+Here's another example:
 
   Imagine a video clip of a slideshow of still images, in which each slide spans
-  for five seconds. As such, this clip contains frames that duplicates
-  themselves. It's very inefficient to memorize these frames and their
-  duplicates individually. Instead, each frame is memorize once but is
-  programmed to be shown for five seconds.
+  for five seconds. As such, this clip contains duplicate frames, and memorizing
+  them is inefficient. One technique is to have each unique frame memorized once
+  and flagged to be shown for five seconds.
 
-Of course the actuality is much, much deeper than this. What's crucial to
-understand are the two classes of compression algorithms: lossless and lossy.
+There are a lot more behind the magic than those two examples have shown.
 
+There are two classes of compression algorithms: lossless and lossy.
 
-————A001: Lossless
-Lossless (implying no loss) algorithms allows a verbatim reconstruction of the
-original data, like ZIP. It's used for applications in which the original and
-decompressed data have to be congruent, such that slight deviations will break
-them. Examples that require this include text files--say, we wouldn't want this
-manual to appear incomplete or broken do we?
+---—A01: Lossless
+Lossless algorithms allows a verbatim reconstruction of data, such that the
+original and decompressed data have to be congruent. Applications that require
+this include document files.
 
-We have already looked at lossless compression above with the stream of 1s,
-recall "'1' seventeen times."
+---—A02: Lossy
+Lossy algorithms allows an approximated reconstruction of data, such that
+unnecessary parts of the original data are irreversibly-discarded. It's common
+in the media world, where inaudible sounds in audio streams are removed,
+negligible differences between pixels in images are blended--just to name a few.
 
+When lossy-compressed media streams are perceptually-indistinguishable from
+their original sources, they are transparent.
 
-————A002: Lossy
-Lossy (implying loss) algorithms allows an approximated reconstruction of the
-original data, like JPEG. Information that are unnecessary, mostly
-imperceptible, are irreversibly-discarded, hence further reducing the size of
-the overall data. Its use is very common in the media world, where inaudible
-sounds in audio data are removed, negligible differences between pixels in
-images are blended--just to name a few.
-
-By means of analogy, the stream of 1s above can be memorized as "'1' about two
-raised to the 4 times," where the exponent varies with the input. With larger
-numbers, the effect becomes more obvious.
-
-As a friendly reminder, transcoding from a lossy source is considered a bad
-practice. I can painfully-tolerate this process up to twice, that is from
-source, transcoded, then transcoded again and again*.
-
-There are times when lossy-compressed media are indistinguishable from their
-original source, such cases are referred to as transparency. Despite this, it's
-still not recommended to recompress them.
-
-Someone in the Hydrogenaudio forums did an experiment in which they recompressed
-audio 100 times on nine different codecs. The results? Some survived very well,
-others are simply unlistenable. See:
-
-  [ http://www.hydrogenaud.io/forums/index.php?showtopic=100067 ]
-
-*this stage is allowed for temporal purposes only
+Transcoding from a lossy source is a bad practice. For myself, I allow this up
+to twice; that is from source, transcoded, then transcoded again and again, the
+last of which is reserved for temporary uses.
 
 
-——B000: Common Applications
-Usually, still images (pictures) are compressed with JPEG, or PNG audio data is
-compressed with Opus, AAC, or MP3, and video data is compressed with H.264,
-H.265 (HEVC, 4K Blu-ray), VP9, or AV1 (both on YouTube).
+————A10: Compression Level
+For lossy algorithms, the level of compression affects their granularity of
+approximation. Some data can be well-reconstructed with a higher level of
+approximation than others. For example, an image of a solid color can be
+well-reconstructed with little data, but the same amount can not reconstruct an
+image of a 17th century Flemish engraving at any passing accuracy. Therefore,
+the optimal compression level depends on the input.
+
+For both lossless and lossy algorithms, the level of compression affects the
+encoding time and efficiency.
 
 
-——C000: Audio Compression
-Today, we have the ability to store lossless audio without problems, and
-everyone should be familiar with FLAC. That being said, this section is mainly
-for people who want to place gazillions of songs into a tiny card or a CD for
-casual outdoor listening.
+————A20: Rate Control
+In the lossy compression of audio or video streams, bitrate--the number of bits
+per time unit--is a parameter that determines the compression level. There are
+two methods of controlling the bitrate: constant and variable.
 
-If you're at home, a friend's house, or at work, you're better off listening to
-your CDs, tapes if you have them, or at least lossless copies of them.
+---—A21: Constant Bitrate
+Constant bitrate allocates the same number of bits to each time unit, such that
+the bitrate remains constant throughout the stream. The level of compression and
+thus approximation for a unit may differ from another, and bit stuffing may be
+done to reach the desired bitrate.
 
-Do note that I'm covering only 2 channel 44.1 kHz, or CD-quality audio, unless
-noted.
+Constant bitrate is designed for fixed-rate transfers and playback, and the size
+of the output stream can be calculated by multiplying the bitrate by the
+duration of the input stream.
 
+---—A22: Variable Bitrate
+Variable bitrate allocates a different number of bits to each time unit, such
+that the bitrate varies throughout the stream. The level of compression is
+dynamically-adjusted to achieve some consistency in the level of approximation.
 
-————C001: Vorbis
-Vorbis began as a project to develop an open, patent- and royalty-free
-alternative to MPEG-1/2 Audio Layer III (MP3). The result is an audio
-compression format of higher fidelity than that of MP3, especially at low bit
-rates. Most software media players, except ones from Apple, supports playback
-for Vorbis. I used to compress my music library with Vorbis at the following
-parameters:
-
-  Codec:          Vorbis
-  Rate Control:   Constant Quality
-  Quality:        2
-
-for an average bit rate of 96 kbps and a maximum of 112 kbps. Using a pair of
-low-mid-range headset with plausible treble reproduction, the difference from
-the source is audible but rather minimal and otherwise negligible. However, if
-you require transparency, use quality 5, or 6 for lossless stereo coupling.
-YouTube seems to have used quality 4 on their videos. The default quality is 3.
-
-Source audio with a different sampling rate may follow the above recommendation
-as Vorbis will attempt to adjust itself to follow. Recommendations for source
-audio with more than 2 channels are undetermined as the scenario is very
-uncommon. For now, take this as a process of trial and error, start from quality
-2 and ABX your way up.
+The variation of bitrate can be further-defined with at least two options:
+constant quality maintains the level of approximation throughout the stream.
+Average bitrate maintains the average bitrate of the stream. The latter can be
+used to limit the file size to a target based on the bitrate, though it's not an
+equal substitute to constant bitrate.
 
 
-————C002: Advanced Audio Coding (AAC)
-This is the choice of many people for compatibility and superiority. However,
-there are a lot of parameters to digest.
+——B00: Audio Compression
+With typical storage capacities today, storing lossless-compressed audio streams
+doesn't seem as big as it was, and everyone should be familiar with FLAC. This
+section is mainly for those who want to place gazillions of songs into a tiny
+card or optical disc for casual outdoor listening, or to transfer them over the
+Internet for playback. If you're at home, a friend's house, or at work, you're
+better off listening to your CDs, tapes, or lossless copies of them.
 
-There are at least three encoding profiles: AAC-LC, HE-AAC, and HE-AAC v2. LC
-(low complexity) is at the same level as Vorbis. HE (high efficiency) is a step
-further by encoding at half the LC bitrate, relying on Spectral Band Replication
-(SBR) to fill in missing higher frequencies. The last is more or less the same
-but with Parametric Stereo. These technologies don't provide transparency at
-all; transparency can only be achieved with AAC-LC. Supposedly, many portable
-media players (in the past) support only AAC-LC.
+I'm covering mainly 2-channel, 44.1 kHz or CD-quality audio.
 
-A huge reason why AAC didn't make into my media library is the wide availability
-of encoders: some are good, some are bad. Here is a list of them sorted by
-Hydrogenaudio recommendations:
 
-  # | Encoder                  |  Comment
-  ---------------------------------------
-  1   Apple AAC                   Requires Apple
-  2   FhG AAC                     Winamp
-  3   Fraunhofer FDK AAC          Good, cross-platform
-  4   Nero AAC                    Good, but no longer in development
-  5   FFmpeg 3.0+ AAC encoder     AAC-LC only
-  6   FAAC                        Poor
-  7   Libav (pre-3.0 FFmpeg)      Poor, but free (GPL)
+————B10: Opus
+Opus has superseded Vorbis and its competing formats. It incorporates
+technologies from Skype's SILK and Xiph.Org's CELT to provide an open,
+multi-purpose, low-latency audio format. It has since gained widespread support,
+especially in the second half of the 2010s.
 
-To get the best out of AAC, you need Apple software (iTunes). With Vorbis, I
-don't have to worry too much about this. You can access the latest version of
-this list online:
+Here are my starting recommendations for Opus:
 
-  [ http://wiki.hydrogenaud.io/index.php?title=Advanced_Audio_Coding ]
-
-It's crucial to know which encoder your software uses. If you're using Apple,
-you're good to go. Otherwise, many indie software should be using at least
-FFmpeg's encoder, and may have the option to use Fraunhofer FDK AAC instead.
-Ultimately, stay away from anything below that (and the use of third-party
-commercial conversion software).
-
-My recommendations for AAC follows:
-
-  Codec:          AAC
-  Profile:        LC
-  Encoder:        Fraunhofer FDK AAC
+       Encoder:   libopus
   Rate Control:   Variable Bitrate
-  Mode:           3
+       Bitrate:   80 kbps
 
-This should give an average bit rate of around 112 kbps. Side note, if you
-follow the above and was returned "poor" quality audio, you can try tweaking the
-lowpass filter to 20000 Hz. This provide full range encoding with a tradeoff of
-having audible artifacts. Transparency can be achieved with at least 160 kbps,
-or with Fraunhofer FDK AAC, mode 5.
-
-If you already have iTunes, then I recommend you to use Apple AAC, but you have
-to know how to get yourself around that. I haven't use iTunes for years.
+Transparency can be achieved with at least 160 kbps, though you may be happy
+with 128 kbps.
 
 
-————C003: Google's AAC Recommendations
-For YouTube, Google recommends the following:
+————B20: Vorbis
+Vorbis began as a project to develop an open, royalty-free alternative to
+MPEG-1/2 Audio Layer III (MP3). The result is an audio compression format with
+fidelity higher than that of MP3, especially at low bitrates. Today, most
+software support playback for Vorbis.
 
-  Channels  |  Bitrate (kbps)
+Here are my starting recommendations for Vorbis:
+
+       Encoder:   Aoyumi's Tuned Vorbis (aoTuV)
+  Rate Control:   Constant Quality
+       Quality:   2
+
+Transparency can be achieved with at least quality 5. The default is quality 3.
+
+Many programs use the libvorbis encoder. aoTuV is a modification of it that may
+output slightly-better and -larger streams.
+
+My old music library was built under the above recommendations except for my use
+of the libvorbis encoder.
+
+
+————B30: Advanced Audio Coding (AAC)
+AAC was collaboratively-developed as a successor to MP3. This is the choice of
+many for its universal compatibility.
+
+AAC encoding methods are organized into Object Types, of those I recommend
+either Low Complexity (LC) or High Efficiency (HE) for music. Many portable
+media players (in the past?) support only AAC-LC.
+
+Here is a list of AAC encoders sorted by Hydrogenaudio recommendations:
+
+  Encoder            | Comment
+  ----------------------------
+  Apple AAC            Shipped with Apple software.
+  FhG AAC              Winamp.
+  Fraunhofer FDK AAC   Cross-platform.
+  Nero AAC             No longer being developed.
+  FFmpeg               AAC-LC only. Cross-platform.
+  FAAC                 AAC-LC only. Cross-platform.
+  Libav                Experimental.
+
+  [ https://wiki.hydrogenaud.io/index.php?title=AAC_encoders ]
+
+It's crucial to know which encoder your program uses. If you're using Apple
+software, then you're good to go. Otherwise, many should be using at least
+FFmpeg's encoder, and may have the option to use Fraunhofer FDK AAC instead.
+
+Here are my starting recommendations for AAC:
+
+   Object Type:   LC
+       Encoder:   Fraunhofer FDK AAC
+  Rate Control:   Constant Bitrate
+       Bitrate:   112 kbps
+
+FDK AAC lacks a variable bitrate mode that averages at around the above bitrate.
+The closest one is 4 which averages at around 128 kbps. Transparency can be
+achieved with at least 160 kbps.
+
+For YouTube, here are Google's recommendations for AAC:
+
+  Channels   | Bitrate (kbps)
   ---------------------------
   1 (Mono)     128
   2 (Stereo)   384
   5.1          512
 
-These look like high-quality bitrates to me. You can find the current revision
-at [ https://support.google.com/youtube/answer/1722171 ].
+  [ https://support.google.com/youtube/answer/1722171 ]
 
 
-————C004: MPEG-1 Layer III (MP3)
-By now, everyone should've moved on from this codec. It's here for compatibility
-purposes only. Here are my recommended parameters for MP3:
+————B40: MPEG-1/2 Audio Layer III (MP3)
+Despite the superiority of its successor: AAC, it remains popular in
+colloquialism and Internet music distribution.
 
-  Codec:          MP3
-  Encoder:        LAME
+Here are my starting recommendations for MP3:
+
+       Encoder:   LAME
   Rate Control:   Variable Bitrate
-  Quality:        5
+       Quality:   5
 
-for an average bit rate of 130 kbps ranging from 120 to 150. Transparency can be
-achieved with quality 2. If you want support for the bedrock of all hardware
-players, you may have to use constant bitrate, which itself is inefficient:
+Transparency can be achieved with quality 2 or lower. For the bedrock of all
+hardware players, you may have to use constant bitrate:
 
   Rate Control:   Constant Bitrate
-  Bit Rate:       160 kbps
+       Bitrate:   160 kbps
 
-It may be surprising that the bit rate is higher than the average achieved by
-quality 5, and even the Internet-standard 128 kbps. Firstly, this is due to the
-technical difference between variable and constant bitrate. Secondly, we have
-ears that tells us that 128-kbps MP3s are horrible. Lastly, there is an 144-kbps
-option, though I haven't seen anything that works with it. Ensure that your
-encoding software uses the latest release of LAME:
+For maximum quality, use the following parameters:
 
-  [ https://lame.sourceforge.io ]
-
-I personally encode my high-fidelity (Hi-Fi) MP3 library using LAME with the
-following command-line arguments:
-
-  -q 0 -V 0 --noreplaygain
-
-This is more space-efficient, and returns similar results to a constant 320
-kbps. Additionally, it works with every single MP3 player I own: from a 2002
-Sony CD Walkman, to a 2014 Sony Walkman. So I don't see any reason to use a
-constant 320 kbps on a personal scale, especially in 2021.
-
-
-————C005: Opus
-Vorbis began to be superseded by Opus, it incorporates technologies from Skype's
-SILK codec and Xiph.Org's CELT codec to provide an open, multi-purpose,
-low-latency audio codec.
-
-The following is what I recommend for CDDA-quality audio:
-
-  Codec:          Opus
   Rate Control:   Variable Bitrate
-  Bit Rate:       80 kbps
+       Quality:   0
 
-I'd be satisfied with 80 kbps, but try 96 kbps if you can differentiate the
-sound output between two CD players of the same brand.
-
-Transparency can be achieved with at least 160 kbps, though some are very happy
-with 128 kbps. For 5.1 tracks, use 256 kbps. Sometime in 2019, YouTube started
-to use Opus on videos.
+This returns similar results to constant 320 kbps for smaller file sizes.
 
 
-——D000: Audio Recording
-I advise you to always record and save your recordings losslessly. That means to
-match the input device's sampling rate and bit depth, and save your recordings
-in a lossless format like FLAC. If uncertain, go for 16-bit at 44100 Hz. That
-way, your recordings would be virtually future-proof, as they're made at the
-highest quality possible.
+————B50: Windows Media Audio (WMA)
+WMA is Microsoft's take on the audio compression bandwagon from the late 1990s
+to compete with MP3. Initially boastful for reaching "near CD-quality" at 64
+kbps, it was supported on some portable, car, and home audio equipment. With the
+lack of cross-platform availability, there's virtually no reason to use WMA
+today.
+
+There are several versions of WMA, including Professional, Lossless, and Voice.
+
+My software infrastructure is no longer on Windows, and FFmpeg's encoder is a
+far cry from Microsoft's, leaving me no other way than to recommend from memory:
+
+        Format:   WMA2
+       Encoder:   Microsoft
+  Rate Control:   Constant Bitrate
+       Bitrate:   128 kbps
+
+Microsoft used 160 kbps for the sample music that came with Windows Vista. There
+may be an option for variable bitrate.
 
 
-——E000: Video Compression
-Videos come in all shapes and sizes; there is no common source format--except
-that a majority are compressed with non-open formats. If you want to encode in
-real-time for recording, see section F000.
+————B60: Adaptive Transform Acoustic Coding (ATRAC)
+ATRAC is Sony's foray into lossy audio compression from the early 1990s to
+compete in the theaters and the like. It was used in the MiniDisc (MD), and was
+later supported on non-MD hardware to compete with MP3. Eventually, they gave
+up: first by adding support for MP3 onto their Network Walkmen, then by
+discontinuing the format at around the turn of the decade. Like WMA, ATRAC lacks
+cross-platform availability, and is unsupported even on modern Sony players.
+
+Versions include ATRAC, ATRAC3, ATRAC3plus, and ATRAC Advanced Lossless. ATRAC
+2, 3, 3.5, 4, 4.5, etc. are implementations of ATRAC, while ATRAC3 is an
+incompatible upgrade to ATRAC.
+
+At its current status, I recommend ATRAC only to players it's used in:
+
+            MiniDisc | ATRAC CD
+            -------------------
+   Format:  ATRAC      ATRAC3plus
+  Encoder:  Sony       Sony
+  Bitrate:  132 kbps   256 kbps
+
+These are the highest bitrates available to my players.
+
+ATRAC3 is accessible via MiniDisc Long Play (MDLP) at up to 64 kbps. Why Sony
+didn't offer ATRAC3 at 132 kbps for MD is beyond me. ATRAC3plus at 256 kbps can
+fit over five hours into a CD. It may work on players that supposedly don't play
+ATRAC3plus at this bitrate.
 
 
-————E001: H.264
-Like AAC, this is the choice of many people for compatibility and superiority
-over many other codecs in this generation. There are rather countless devices
-that can both encode and decode H.264 videos at the hardware level. Here are my
-recommendations for H.264:
-
-  Codec:          H.264
-  Encoder:        x264 (preferred) or hardware
-  Rate Control:   Constant Rate Factor/Constant Quantizer
-  Quantizer:      <see below>
-  Profile:        <see below>
-  Preset:         Slow, Medium if impatient, Medium Slow if half-impatient
-  Tune:           Disabled, except when ideal
-
-  Quantizer  |  Description  |  Detail Loss
-  -----------------------------------------
-  18            Transparent     Slight
-  23            Default         Noticable
-  28            -               Tolerable
-  30            My minimum      Barely tolerable
-
-  Profile  |  Target
-  ------------------
-  Baseline    Early players, low-ends
-  Main        General
-  High        PCs, high-ends
-  High 10     HDR
+————B70: Audio Recording
+I advise you to record losslessly. That means to match the input device's
+sampling rate and bitdepth, and save your recordings in a lossless format like
+FLAC. That way, your recordings would be virtually future-proof, as they're made
+at the best quality possible. If uncertain, use 16-bit at 44100 Hz.
 
 
-————E002: Google's H.264 Recommendations
-You might want to take a look at Google's very own recommendations from H.264
-[ https://support.google.com/youtube/answer/1722171 ]. The following adaptation
-may not reflect later changes.
+——C00: Video Compression
+Videos come in all shapes and sizes, and are rarely distributed in lossless
+formats. This section is not only for those who want to distribute them over the
+Internet for playback, but also those who want to achieve transparency for
+second-rate archiving.
 
-  Codec:                  H.264
-  Rate Control:           Variable Bitrate
-  Bitrate:                <see below>
-  Chroma Subsampling:     4:2:0
-  Profile:                High
-
-  "2 consecutive B frames"
-
-And the following bitrate reference table is for content clocking up to 30 fps:
-
-  Resolution  |  Bitrate (Mbps)
-  -----------------------------
-  2160p (4K)     35-45
-  1440p (2K)     16
-  1080p (FHD)    8
-  720p  (HD)     5
-  480p  (SD)     2.5
-  360p           1
-
-For content clocking over 30 fps, multiply the reference bitrates by 1.5. For
-example, for 1080p, it's 8 * 1.5 = 12 Mbps.
+All parameters are designed for use with FFmpeg.
 
 
-————E003: H.265
-I'm very aware of a successor to H.264, H.265, also known as HEVC. If you have
-the option and power to use it, then go for it. Unfortunately, I don't have such
-power to use it extensively. So far, the default settings worked great.
+————C10: Advanced Video Coding (AVC/H.264)
+This is the choice of many. There are countless devices that can both encode and
+decode H.264 videos at the hardware level.
+
+Here are my starting recommendations for H.264:
+
+       Encoder:   x264 (libx264)
+  Rate Control:   Constant Rate Factor (CRF)
+           CRF:   23
+        Preset:   slow
+
+Transparency can be achieved with CRF 18 or lower. A faster preset decreases the
+encoding time and quality, use them only for real-time recording if a hardware
+encoder is inaccessible. You may also need to lower the CRF to compensate over
+the quality loss. The default is CRF 23, medium preset.
+
+If you're using 10-bit x264, then maybe multiply the CRFs by `64 / 52` to
+transpose them to its larger scale. x264 has a lossless mode accessible with CRF
+0.
+
+For YouTube, here are Google's recommendations for H.264:
+
+             Profile:   High
+        Rate Control:   Variable Bitrate
+             Bitrate:   <see below>
+  Chroma Subsampling:   4:2:0
+  - 2 consecutive B frames.
+  - Closed GOP. GOP of half the frame rate.
+  - CABAC.
+
+And the following bitrate table is for frame rates up to 30 fps:
+
+  Resolution  | Bitrate (Mbps)
+  ----------------------------
+  2160p (4K)    35-45
+  1440p (2K)    16
+  1080p (FHD)   8
+  720p  (HD)    5
+  480p  (SD)    2.5
+  360p          1
+
+For frame rates above 30 to 60 fps, multiply the bitrate by 1.5. For example,
+for 1080p, it's 8 * 1.5 = 12 Mbps.
+
+For HDR uploads, multiply the bitrate by 1.25. For example, for 1080p60, it's
+12 * 1.25 = 15 Mbps. HDR is not supported below 720p.
+
+  [ https://support.google.com/youtube/answer/1722171 ]
 
 
-————E004: Theora
-For low-resolution videos, or ones from low-resolution sources, and/or with
-low-motion, like a retro text adventure, I find that the Theora format is able
-to handle such videos well while achieving a decent level of transparency--for
-a larger file size.
+————C20: MPEG-4
+Superseded by H.264, it remains as a cheap solution but with larger storage
+costs. Try it if H.264 is inaccessible.
 
-Theora videos are usually encoded at a variable frame rate. That means, the
-video stream freezes in scenes with no motion at the right durations. The
-problem with this is that it may introduce timing errors, especially after
-seeking.
+Here are my starting recommendations for MPEG-4:
 
-Note that this is just an alternative. You can also use H.264 for such contents.
-But if you strict yourself to open formats, or simply love Theora for no reason
-whatsoever, then this is for you.
-
-  Codec:          Theora
+       Profile:   Advanced Simple Profile
+       Encoder:   Xvid (libxvid)
   Rate Control:   Constant Quantizer
-  Quantizer:      5-7 (content-dependent)
+     Quantizer:   4
+
+Transparency can be achieved with quantizer 2 or lower.
 
 
-————E005: VP8
-After a number of frustrations and tests, I concluded that VP8 is significantly
-inferior compared to H.264. To bid a proper farewell, I made one final update to
-this section (for u0r2). So now, it's here only for our reference.
+————C30: Theora
+Theora derived from On2's VP3 to develop an open, royalty-free video format
+comparable to MPEG-4.
 
-  Codec:              VP8
-  Rate Control:       Variable Bitrate
-  Bit Rate:           <see below>
+Theora videos are usually encoded at a variable frame rate, so they may freeze
+during scenes with no motion.
+
+Here are my starting recommendations for Theora:
+
+       Encoder:   libtheora
+  Rate Control:   Constant Quantizer
+     Quantizer:   7.5
+
+Transparency can be achieved with the maximum quality of 10.
+
+
+————C40: VP8
+VP8 is another video format from On2 that has since been acquired by Google,
+then freed as part of their WebM project. It's a royalty-free equivalent of
+H.264.
+
+Here are my starting recommendations for VP8:
+
+           Encoder:   libvpx
+      Rate Control:   Constrained Quality
+           Quality:   30
   Encoding Quality:   Good
+          CPU Used:   0
 
-The bitrate can be calculated with the following block of conditional
-statements:
+Transparency can be achieved with quality 8 or lower, which outputs much larger
+streams than x264 achieving transparency with CRF 18 or lower. The default is
+quality 10.
 
-1   Getting the base bitrate
-  a   If the aspect ratio is 16:9 (or wide), use 4/3 the width
-  b   If the aspect ratio is 4:3 (or not wide), use the width
+----Original Recommendations for VP8
+These are some of the earliest building blocks of this manual, staying here for
+legacy reasons. Try them for smaller-sized, lower-quality videos:
 
-2   Getting the motion bitrate
-  a   If the frame rate is 48 or above, use 4/3 the base bitrate
-  b   If the frame rate is 15 or below, use 2/3 the base bitrate
+  Rate Control:   Variable Bitrate
+       Bitrate:   <see below>
+
+The bitrate can be calculated with the following block of conditions:
+
+1   Base bitrate
+  a   If the aspect ratio is 16:9 (or wide), then use 4/3 the width.
+  b   If the aspect ratio is 4:3 (or not wide), then use the width.
+
+2   Motion bitrate
+  a   If the frame rate is 48 or above, then use 4/3 the base bitrate.
+  b   If the frame rate is 15 or below, then use 2/3 the base bitrate.
   c   Otherwise, use the base bitrate as is.
 
-3   Getting the application bitrate
-  a   For emphasis on picture quality, use 3/2 the motion bit rate
-  b   Otherwise, use the motion bitrate as is
+3   Application bitrate
+  a   For emphasis on quality, use 3/2 the motion bitrate.
+  b   Otherwise, use the motion bitrate as is.
 
-And the application bitrate is the final bitrate.
-
-
-————E006: Chroma Subsampling
-The human eye has less spatial color resolution than luminosity. To reflect
-this, color information are usually encoded at a lower resolution. This is
-referred to as chroma subsampling. Common values include:
-
-  Subsampling  |  Description
-  ---------------------------
-  4:4:4           No subsampling
-  4:2:2           Halved
-  4:2:0           Very common, quartered
-
-For me, I just use the same setting as my source; if it's 4:2:0 subsampled, then
-use 4:2:0.
-
-MiniDV uses 4:1:1, which is rather uncommon in recent times, if 4:1:1 is not
-possible, then I recommend that you use either 4:4:4 or 4:2:2, so long as the
-chroma subsampling is more-or-less unaffected.
+And the application bitrate is the final bitrate in kbps.
 
 
-——F000: Video Recording
-Within the computing environment, screen capturing is a common application that
-involves recording videos, resulting in one or more video files to be used as
-sources to their final product. In the preservation of quality on the final
-product, it's crucial that its source files are verbatim copies of their own
-sources, so that lossy compression is applied once. However, raw videos are very
-large in size, hence they are not practical for long durations.
+————C50: H.265, VP9, and AV1
+I'm aware of successors H.265, VP9, and AV1. Try them if your hardware has the
+processing power that matches your patience--mine doesn't.
 
 
-————F001: H.264
-A common end-consumer solution to this is to record in a lossy format while
-maintaining transparency. For such scenarios, I prefer using H.264 with the
-following parameters:
+————C60: Chroma Subsampling
+The human eye has less spatial color resolution than that for luminosity. So,
+color information are usually encoded at a lower resolution. This is referred to
+as chroma subsampling. Common values include:
 
-  Codec:          H.264
-  Encoder:        x264 or hardware (much preferred)
-  Rate Control:   Constant Rate Factor/Constant Quantizer
-  Quantizer:      18*
+  Subsampling | Description
+  -------------------------
+  4:4:4         No subsampling
+  4:2:2         Halved
+  4:2:0         Quartered
 
-*If you set the encoder such that it encodes faster at a loss of efficiency,
-then use a lower quantizer like 14.
-
-
-————F002: Xvid
-If, for any reasons, H.264 is unavailable, then Xvid is a great free and open
-alternative for larger costs of storage space. Use the following parameters:
-
-  Codec:          Xvid
-  Rate Control:   Constant Quantizer
-  Quantizer:      2-4 (content-dependent)
-
-You can get your clean and adware-free copy of Xvid at [ https://www.xvid.com ].
+For myself, I use the same setting as that for the source; if the source is
+4:2:0 subsampled, then I use 4:2:0. MiniDV uses 4:1:1, which is rather uncommon.
+If 4:1:1 is not possible, then I recommend that you use either 4:4:4 or 4:2:2,
+so long as the chroma subsampling is more-or-less unaffected.
 
 
-——G000: Image Compression
-Image compression works similarly to that of video compression, except on a
-single frame only. Like audio, we already have the power to store lossless
-images.
+————C70: Video Recording
+Unlike audio, lossless recording of videos is largely inaccessible due to its
+storage space requirements. The next best solution is to record in a lossy
+format with transparency, for which I recommend using either your hardware H.264
+encoder, x264 (section C10), or Xvid (section C20).
 
 
-————G001: When To Use Lossy Compression?
-It occurred to me that a number of Photoshop people I know does not follow good
-exporting practices. This section is written specifically for anyone under this
-field. In most cases, a lossless export is recommended. A lossy export is
-suitable if you would like to:
+——D00: Image Compression
+Image compression works similarly to that for videos, except on a single frame
+only. For most digital cameras, the default compression settings should be fine.
 
-1   Adhere within upload limits. Note that this is not the only solution to get
-    over them.
 
-2   Use your work for viewing purposes only. Be sure to keep a lossless copy
+————D10: When To Use Lossy Compression?
+It occurred to me some Photoshop people don't follow good exporting practices.
+This section is written specifically for anyone under this field.
+
+In most cases, a lossless export is recommended. A lossy export is suitable if
+you'd like to:
+
+1   Adhere within upload limits. Lossy compression is not the only solution, see
+    section E20.
+
+2   Distribute for viewing purposes only. Be sure to keep a lossless copy
     elsewhere for other uses.
 
-(In)conveniently, most websites convert your image uploads to JPEG for easy web
+(In)conveniently, most websites convert your image uploads to JPEG for web
 viewing. Hence, attempt lossless uploads to preserve as much detail as possible.
 
-In case you may haven't guessed, simply converting a lossy-compressed image to a
-lossless format, without anything in the middle, is not a remedy, but a waste of
-memory (and money).
+Converting a lossy-compressed image to a lossless format, without anything in
+the middle, is a waste of resources.
 
 
-————G002: JPEG
-Obviously I'd recommend JPEG, but I have no specific recommendations as each
-software uses its own scale of values. Usually, default parameters should be
-fine, but I myself tend to use the most expensive (requires most computational
-resources) to improve efficiency. So far from what I've seen in terms of
-default quality, the highest percentile is 90% while the lowest is 80%.
+————D20: JPEG
+JPEG is a lossy image compression format that is popular in colloquialism as
+"J peg." JPEG is an acronym for Joint Photographic Experts Group.
 
-JPEG is an acronym for Joint Photographic Experts Group, which doesn't refer to
-the JPEG codec.
-
-
-————G003: Portable Network Graphics (PNG)
-JPEG provides only lossy compression. PNG is great for lossless compression and
-transparency. With that, I recommend quality 9 or anything that provides the
-highest level of compression.
-
-There are some smartphone programs--or apps--that lets you take PNG pictures,
-but keep in mind that doing so takes much longer than regular JPEGs. Hence, it
-is only ideal for photography-exclusive sessions, and don't forget to transfer
-the pictures afterwards as these take a lot of storage space. One such program
-for Android is OpenCamera [ https://opencamera.sourceforge.io ].
-
-PNG has gained some support for animation with APNG, but it hasn't seen
-widespread use yet.
+I have no specific recommendations for JPEG as each software uses its own scale.
+Usually, the defaults should be fine, but try the most expensive ones (requires
+most computational resources) to improve efficiency. So far from what I've seen
+in terms of default quality, the highest percentile is 90 while the lowest is
+80.
 
 
-————G004: Graphics Interchange Format (GIF)
-GIF, infamous for its support for animation, also supports atomic transparency.
-But have you ever wondered why GIFs looked like it has been posterized*? That's
-because it can store only 256 (8-bit) distinct colors**. We already have the
-technology to store "full" 24-bit color animation (other than videos), read on.
+————D30: Portable Network Graphics (PNG)
+PNG is a lossless image compression format with support for transparency, and
+later animation with APNG.
 
-* as if color gradients look rough
-** but can store 24-bit color using a technique
+My only recommendation for PNG is to use the highest level of compression.
+
+There are some smartphone programs--or apps--that let you take PNG pictures, but
+keep in mind that doing so takes much longer than with JPEG. Hence, it's ideal
+only for photography-exclusive sessions. Don't forget to transfer the PNGs
+afterwards as they take a lot of storage space. One such program for Android is
+OpenCamera.
 
 
-————G005: WebP
-Everyone loves JPEG, PNG for transparency, and GIF for animation. What they are
-not aware of is a new multi-purpose format developed by Google based on VP8,
-called WebP. It can do both lossy and lossless compression, supports both
-transparency and animation, all for reportedly smaller file sizes. The only
-problem is that it hasn't seen widespread support and, eventually, use. I'm
-pretty sure that may be resolved by 2030.
+————D40: Graphics Interchange Format (GIF)
+GIF, infamous for its support for meme-quality animation, also supports atomic
+transparency. It can store only 256 (8-bit) distinct colors. Because of its
+now-inferior compression ratios, some vendors convert them to videos to save
+storage space.
+
+I have no recommendations for GIF.
+
+
+————D50: WebP
+WebP is a multi-purpose image compression format developed by Google based on
+VP8. It can do both lossy and lossless compression, supports both transparency
+and animation, all for reportedly smaller file sizes.
 
 I'm yet to play around WebP.
 
 
-——H000: Ideal Content Manipulation
-Sometimes, compression itself is not enough. You can save more space by
-carefully-manipulating the media itself. If you're archiving stuff then feel
-free to skip this entire section.
+——E00: Media Manipulation
+Sometimes, media compression alone isn't enough. You can further reduce the size
+by manipulating the media itself.
 
 
-————H001: Audio Manipulation
+————E10: Audio Manipulation
 
-----Sampling Rates
-Always inspect your spectrograms. Otherwise, speeches are intelligible from 8
-kHz (telephone), and music gets enjoyable from 32 kHz (FM radio). Full-fidelity
-audio goes from 44.1 or 48 kHz. 192 kHz "Hi-Res" audio do exist, but it's a
-gimmick and adds no benefit to humans. I personally use 22 kHz for AM* radio and
-microcassette recordings, 44.1 or 48 kHz otherwise.
+---—E11: Sampling Rate
+Before anything, inspect your spectrograms.
 
-*not AM Stereo.
+Human speech becomes intelligible at 8 kHz (telephone), and music becomes
+enjoyable at 32 kHz (FM radio). Full-fidelity audio is rated at 44.1 or 48 kHz.
+192 kHz adds no benefit to humans. I personally use 22.05 kHz for regular AM
+radio and microcassette recordings, 44.1 or 48 kHz otherwise.
 
-
-----Bit Depths
+---—E12: Bitdepth
 24 bits adds no practical benefit to 16 bits, especially if you take dithering
 into account. The common quiet listening environments don't allow the enjoyment
 of the theoretical ~96 dB dynamic range of 16-bit audio; it takes a room of
 near-complete true-silence. Also, try A- or µ-law first for 8-bit encoding.
 
-
-----Channels
-Speeches don't need to be stereo or multi-channel, unless the position of the
-speaker(s) is important. Similarly, if the audio itself is already monarual,
-encode it as mono. Multi-channel audio can be downmixed into stereo with Dolby
-Pro Logic or the like, but with some loss in quality.
-
-
-————H002: Image Manipulation
-
-----Colors
-One crucial factor to image encoding is the colorspace. To analogize, it's much
-like defining what set of colored pencils to recreate a certain image. Use the
-smallest colorspace tolerable. For example, a "grayscale" image can be recreated
-with only shades of gray. A solid background image consisting of only one color
-should be encoded with one color (or as little as your image processor allows)
-instead of the usual 24-bit (16777216) colors. Using dithering gives the
-illusion of having more colors than the ones encoded by carefully blending two
-colors together. Programs such as pngquant can do this for you:
-
-  [ https://pngquant.org ]
+---—E13: Channels
+Human speech doesn't need to be stereophonic or beyond, unless positional
+information is important. If the source audio is monaural, then encode it as
+such. Multi-channel audio can be downmixed into stereo with Dolby Pro Logic or
+the like, but with some loss in quality.
 
 
-----Resolution
+————E20: Image Manipulation
+
+---—E21: Colors
+An important factor to image encoding is the color space. It's like defining the
+set of colored pencils used recreate an image. Use the smallest color space
+tolerable. A solid-color image should be encoded with only 1 color--or as little
+as your image processor allows--instead of the usual 24-bit (16777216) colors.
+Dithering gives the illusion of having more colors than the ones encoded by
+blending two colors together. Programs such as pngquant can do all of these for
+you.
+
+---—E22: Resolution
 Usually, hand-drawn diagrams don't need to be captured in HD. This ultimately
-depends on the page size and the stroke thickness. Smaller page sizes and/or
-thicker strokes require less resolution. Some cameras needlessly upscale their
-images, such that downscaling them brings virtually no difference. On my
-stupidphone, I usually downscale my images before sending them to others, though
-some instant-messaging applications do that for you.
+depends on the page size and stroke thickness. Smaller pages and/or thicker
+strokes require less resolution.
+
+Some cameras needlessly upscale their images, such that downscaling them brings
+virtually no difference. I personally downscale my stupidphone images before
+sending them off to others over the Internet.
 
 
-————H003: Video Manipulation
+————E30: Video Manipulation
 Videos are composed of images playing at a certain frame rate accompanied with
-audio. So the above still applies. Some additional information follows.
+audio. So most of the above still apply.
 
 If you compose a video, use simple transitions, avoid as much motion as
-possible, and never apply grainy, particle effects. Similarly, noise reduction
-("denoise") improves compressibility by a notch, as Zoom does to your video
-feeds. Sometimes, even still shots can be noisy. So if you're sane, mask
-whatever's supposed to be still with an image. You can see an example here:
-
-  [ https://www.youtube.com/watch?v=Occ52IZVOh4 ]
-
-in which the surrounding portion of its frames is completely static.
+possible, and don't use particle effects. Noise reduction ("denoise") can
+improve video compressibility by a notch, as Zoom does to your video feeds.
+Sometimes, even still shots can be noisy. So if you're sane, mask whatever's
+supposed to be still with an image. You can see an example in
+[ https://www.youtube.com/watch?v=Occ52IZVOh4 ] in which the surrounding portion
+of its frames is completely static.
 
 
-——LCNS: License
-This work is licensed under the Creative Commons Attribution-ShareAlike 4.0
-International License. To view a copy of this license, visit
+——CRD: Credits
+I'd like to thank the contributors of both the Hydrogenaudio Knowledgebase and
+the FFmpeg Wiki. Parts of this manual were based on my readings of those
+websites.
+
+
+——LCN: License
+Most of this work is licensed under the Creative Commons Attribution-ShareAlike
+4.0 International License. To view a copy of this license, visit
 [ http://creativecommons.org/licenses/by-nc-sa/4.0 ] or send a letter to
 Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
+
+Parts adapted from the Hydrogenaudio Knowledgebase are licensed under the GNU
+Free Documentation License 1.2.
 
 
 ——
